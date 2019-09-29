@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const register = require('../mongodb/registration');
-const joi = require('@hapi/joi');
+const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 
 
@@ -25,12 +25,12 @@ router.post('/new-user', async (req,res) => {
 });
 
 async function Validation(para){
-    let schema = joi.object().keys({
-        firstName: joi.string().min(3).max(150).required(),
-        lastName: joi.string().min(3).max(150).required(),
+    let schema = Joi.object({
+        firstName: Joi.string().min(3).max(150).required(),
+        lastName: Joi.string().min(3).max(150).required(),
         userLogin: {
-            email: joi.min(3).max(150).required(),
-            password: joi.min(3).max(150).required()
+            email: Joi.string().min(3).max(150).required(),
+            password: Joi.string().min(3).max(150).required()
         }
     });
 
