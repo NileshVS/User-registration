@@ -20,9 +20,14 @@ router.post('/new-user', async (req,res) => {
         let salt = await bcrypt.genSalt(10);
         data.userLogin.password = await bcrypt.hash(data.userLogin.password, salt);
         let saved = await data.save();
-        return res.send({ message: "Thank you for registration", data: saved});
+        return res.send({ message: `Thank you ${data.firstName} for registration`, data: saved});
     }
 });
+
+router.get('/view-users' , async (req,res) => {
+    let data = await register.userModel.find().select(['-userLogin']);
+    return res.send(data);
+})
 
 async function Validation(para){
     let schema = Joi.object({
