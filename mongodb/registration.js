@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 let userSchema = new mongoose.Schema({
     firstName: {type:String, required:true, min:3,max:250},
     lastName: {type:String, required:true, min:3,max:250},
+    userId:{type:String, required:true, min:3, max:150},
     userLogin: {
         email: {type: String, required:true, min:3,max:100},
         password: {type: String, required:true}
