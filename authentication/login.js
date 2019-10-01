@@ -4,6 +4,7 @@ const bcrypt= require('bcrypt');
 const Joi = require('@hapi/joi');
 const registerModel = require('../mongodb/registration');
 const authMiddleware = require('../middleware/authenticate');
+const adminMiddleware = require('../middleware/isAdmin');
 
 router.get('/userlogin', async (req,res) => {
     let {error} = Validation(req.body);
@@ -17,6 +18,17 @@ router.get('/userlogin', async (req,res) => {
         if(!password){ return res.status(402).send('Invalid Password')};
         let token= email.userIdentity();
         return res.header('x-auth-token', token).send('User logged in successfully');
+    }
+});
+
+router.delete('/deleteuser/:id',[authMiddleware, adminMiddleware], async (req,res) => {
+    let del = await registerModel.userModel.findByIdAndRemove(req.params.id);
+    console.log(del);
+    if(!del){
+        res.send('No matching ID found');
+    }
+    else{
+        res.send({msg: `User ID ${req.params.id} removed`});
     }
 });
 

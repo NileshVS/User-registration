@@ -1,3 +1,0 @@
-function isAdmin(){
-    let admin;
-}
