@@ -26,7 +26,7 @@ router.post('/newuser', async (req,res) => {
         data.userLogin.password = await bcrypt.hash(data.userLogin.password, salt);
         let saved = await data.save();
         let token = saved.userIdentity();
-        return res.header('x-auth-token', token).send({ message: `Thank you ${data.firstName} for registration`, data: saved});
+        return res.header('x-auth-token', token).send({ message: `Thank you ${data.userId} for registration`, data: saved});
     }
 });
 //view all users

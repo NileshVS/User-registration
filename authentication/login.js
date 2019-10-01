@@ -3,8 +3,9 @@ const router = express.Router();
 const bcrypt= require('bcrypt');
 const Joi = require('@hapi/joi');
 const registerModel = require('../mongodb/registration');
+const authMiddleware = require('../middleware/authenticate');
 
-router.get('/userlogin', async (req,res) => {
+router.get('/userlogin', authMiddleware, async (req,res) => {
     let {error} = Validation(req.body);
     if (error){
         return res.status(402).send(error.details[0].message);
