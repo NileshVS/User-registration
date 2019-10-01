@@ -3,6 +3,7 @@ const router = express.Router();
 const register = require('../mongodb/registration');
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
 
 //add new user
 router.post('/newuser', async (req,res) => {
@@ -19,6 +20,7 @@ router.post('/newuser', async (req,res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             userId: req.body.userId,
+            avatar: 'undefined',
             userLogin: req.body.userLogin
         });
 
@@ -28,8 +30,44 @@ router.post('/newuser', async (req,res) => {
         return res.send({ message: `Thank you ${data.userId} for registration`, data: saved});
     }
 });
+
+//file upload
+let storage = multer.diskStorage({
+    destination: function(req,file,cb){
+        cb(null, './avatars/');
+    },
+    filename: function(req,file,cb){
+        cb(null, file.originalname);
+    }
+});
+
+const filefilter = (req, file,cb) => {
+    if(file.mimetype == 'image/png' || file.mimetype == 'image/jpg' || file.mimetype == 'image/jpeg'){
+        cb(null, true);
+    }
+    else{
+        cb(null, false);
+    }
+}
+
+let upload= multer({
+    storage: storage,
+    limits: {fileSize: 1024 * 1024 * 5},
+    fileFilter: filefilter
+}).single('avatar');
+
+
+router.post('/newuseravatar/:id', upload, async (req,res) => {
+    let portNo = 'localhost:4000';
+    let idAvatar = await register.userModel.findByIdAndUpdate(req.params.id, { avatar: portNo + '/avatars/' + req.file.filename});
+    // console.log(idAvatar);
+    if(!idAvatar){ res.send('ID not found')};
+    res.send({msg: "Image uploaded", path: idAvatar.avatar});
+});
+
+
 //view all users
-router.get('/view-users' , async (req,res) => {
+router.get('/view-users' ,async (req,res) => {
     let data = await register.userModel.find().select(['-userLogin']);
     return res.send(data);
 })

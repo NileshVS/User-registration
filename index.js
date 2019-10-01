@@ -9,7 +9,8 @@ const fileUpload= require('./routes/file.routes');
 
 app.use(express.json());
 app.use(morgan('tiny'));
-app.use('/uploads',express.static('uploads'));
+app.use(express.static('uploads'));
+app.use(express.static('avatars'));
 app.use('/api', [register, login, fileUpload]);
 
 app.listen(4000, () => console.log("Server is running at 4000 :)"));
