@@ -4,6 +4,8 @@ const register = require('../mongodb/registration');
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
+const fs = require('fs');
+
 
 //add new user
 router.post('/newuser', async (req,res) => {
@@ -59,10 +61,11 @@ let upload= multer({
 
 router.post('/newuseravatar/:id', upload, async (req,res) => {
     let portNo = 'localhost:4000';
-    let idAvatar = await register.userModel.findByIdAndUpdate(req.params.id, { avatar: portNo + '/avatars/' + req.file.filename});
-    // console.log(idAvatar);
-    if(!idAvatar){ res.send('ID not found')};
-    res.send({msg: "Image uploaded", path: idAvatar.avatar});
+    let idCheck = await register.userModel.findById(req.params.id);
+    if(!idCheck){ res.send('ID not found')};
+    await register.userModel.findByIdAndUpdate(req.params.id, { avatar: portNo + '/avatars/' + req.file.filename});
+    let updatedAvatar = await register.userModel.findById(req.params.id);
+    res.send({msg: "Image uploaded", path: updatedAvatar.avatar});
 });
 
 
