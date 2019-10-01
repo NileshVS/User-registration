@@ -5,7 +5,7 @@ const Joi = require('@hapi/joi');
 const registerModel = require('../mongodb/registration');
 const authMiddleware = require('../middleware/authenticate');
 
-router.get('/userlogin', authMiddleware, async (req,res) => {
+router.get('/userlogin', async (req,res) => {
     let {error} = Validation(req.body);
     if (error){
         return res.status(402).send(error.details[0].message);
@@ -15,7 +15,9 @@ router.get('/userlogin', authMiddleware, async (req,res) => {
         if(!email){ return res.status(402).send('Email ID not found')};
         let password=await bcrypt.compare(req.body.userLogin.password, email.userLogin.password);
         if(!password){ return res.status(402).send('Invalid Password')};
-        return res.send('User Authenticated');
+        console.log(email);
+        let token= email.userIdentity();
+        return res.header('x-auth-token', token).send('User logged in successfully');
     }
 });
 

@@ -13,7 +13,7 @@ let userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.userIdentity = function() {
-    let token= jwt.sign({_id: this._id}, config.get('jwtKey'));
+    let token= jwt.sign({_id: this._id, isAdmin: this.isAdmin}, config.get('jwtKey'));
     return token;
 };
 
