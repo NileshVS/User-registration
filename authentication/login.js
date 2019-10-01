@@ -23,7 +23,7 @@ router.get('/userlogin', async (req,res) => {
 
 router.delete('/deleteuser/:id',[authMiddleware, adminMiddleware], async (req,res) => {
     let del = await registerModel.userModel.findByIdAndRemove(req.params.id);
-    console.log(del);
+    // console.log(del);
     if(!del){
         res.send('No matching ID found');
     }
