@@ -15,7 +15,6 @@ router.get('/userlogin', async (req,res) => {
         if(!email){ return res.status(402).send('Email ID not found')};
         let password=await bcrypt.compare(req.body.userLogin.password, email.userLogin.password);
         if(!password){ return res.status(402).send('Invalid Password')};
-        console.log(email);
         let token= email.userIdentity();
         return res.header('x-auth-token', token).send('User logged in successfully');
     }
