@@ -5,7 +5,7 @@ const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 
 //add new user
-router.post('/new-user', async (req,res) => {
+router.post('/newuser', async (req,res) => {
     let {error} = Validation(req.body);
     if(error){
         return res.status(404).send(error.details[0].message);
@@ -25,7 +25,8 @@ router.post('/new-user', async (req,res) => {
         let salt = await bcrypt.genSalt(10);
         data.userLogin.password = await bcrypt.hash(data.userLogin.password, salt);
         let saved = await data.save();
-        return res.send({ message: `Thank you ${data.firstName} for registration`, data: saved});
+        let token = saved.userIdentity();
+        return res.header('x-auth-token', token).send({ message: `Thank you ${data.firstName} for registration`, data: saved});
     }
 });
 //view all users

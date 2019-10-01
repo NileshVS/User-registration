@@ -3,10 +3,8 @@ const router = express.Router();
 const bcrypt= require('bcrypt');
 const Joi = require('@hapi/joi');
 const registerModel = require('../mongodb/registration');
-const config = require('config');
-const jwt = require('jsonwebtoken');
 
-router.get('/auth', async (req,res) => {
+router.get('/userlogin', async (req,res) => {
     let {error} = Validation(req.body);
     if (error){
         return res.status(402).send(error.details[0].message);
@@ -16,9 +14,7 @@ router.get('/auth', async (req,res) => {
         if(!email){ return res.status(402).send('Email ID not found')};
         let password=await bcrypt.compare(req.body.userLogin.password, email.userLogin.password);
         if(!password){ return res.status(402).send('Invalid Password')};
-        console.log(email);
-        let token = email.userIdentity();
-        return res.header('x-auth-token', token).send('User Authenticated');
+        return res.send('User Authenticated');
     }
 });
 
