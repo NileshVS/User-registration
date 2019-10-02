@@ -6,12 +6,13 @@ const login=require('./authentication/login');
 const morgan = require('morgan');
 const config=require('config');
 const fileUpload= require('./routes/file.routes');
+const resetMail = require('./routes/nodemailer.routes');
 
 app.use(express.json());
 app.use(morgan('tiny'));
 app.use('/uploads',express.static('uploads'));
 app.use('/avatars',express.static('avatars'));
-app.use('/api', [register, login, fileUpload]);
+app.use('/api', [register, login, fileUpload, resetMail]);
 
 app.listen(4000, () => console.log("Server is running at 4000 :)"));
 
